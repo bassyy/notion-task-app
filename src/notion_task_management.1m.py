@@ -16,7 +16,7 @@ DATABASE_ID = os.getenv('DATABASE_ID')
 ZENITY_SCRIPT_PATH = os.getenv('ZENITY_SCRIPT_PATH')
 
 # スクリプトのパスとPythonのパスをまとめて変数に
-PYTHON_PATH = '/Users/p181/.pyenv/versions/3.11.6/bin/python3'
+PYTHON_PATH = os.getenv('PYTHON_PATH')
 SCRIPT_PATH = os.path.abspath(__file__)
 
 # Notion APIのエンドポイント
