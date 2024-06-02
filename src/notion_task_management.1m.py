@@ -14,8 +14,6 @@ load_dotenv()
 NOTION_API_TOKEN = os.getenv('NOTION_API_TOKEN')
 DATABASE_ID = os.getenv('DATABASE_ID')
 ZENITY_SCRIPT_PATH = os.getenv('ZENITY_SCRIPT_PATH')
-
-# スクリプトのパスとPythonのパスをまとめて変数に
 PYTHON_PATH = os.getenv('PYTHON_PATH')
 SCRIPT_PATH = os.path.abspath(__file__)
 
@@ -27,6 +25,16 @@ headers = {
     "Authorization": f"Bearer {NOTION_API_TOKEN}",
     "Content-Type": "application/json"
 }
+
+# 期限をISO 8601形式に変換
+def change_deadline(deadline):
+    if deadline:
+        try:
+            deadline = datetime.strptime(deadline, "%Y/%m/%d").strftime("%Y-%m-%d")
+        except ValueError:
+            print("日付形式が正しくありません。")
+            return
+    return deadline
 
 def run_zenity(script_path):
     result = subprocess.run([script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -58,7 +66,7 @@ def fetch_tasks():
 
 def add_task():
     dialog_result = run_zenity(ZENITY_SCRIPT_PATH)
-    
+
     task_name = dialog_result[0].strip()
     deadline = dialog_result[1].strip()
     memo = dialog_result[2].strip()
@@ -67,13 +75,8 @@ def add_task():
         print("タスク名は必須です。")
         return
 
-    # 期限をISO 8601形式に変換
-    if deadline:
-        try:
-            deadline = datetime.strptime(deadline, "%Y/%m/%d").strftime("%Y-%m-%d")
-        except ValueError:
-            print("日付形式が正しくありません。")
-            return
+
+    deadline = change_deadline(deadline)
 
     new_task = {
         "parent": {"database_id": DATABASE_ID},
@@ -130,13 +133,15 @@ def delete_task(task_id):
         print(response.text)
 
 def edit_task(task_id):
-    task_name = input("新しいタスク名を入力してください: ")
-    priority = input("新しい優先度を入力してください（低, 中, 高）: ")
-    status = input("新しいステータスを入力してください（未着手, 進行中, 完了）: ")
-    deadline = input("新しい期限を入力してください（YYYY-MM-DD形式）: ")
-    memo = input("新しいメモを入力してください: ")
+    dialog_result = run_zenity(ZENITY_SCRIPT_PATH)
+
+    task_name = dialog_result[0].strip()
+    deadline = dialog_result[1].strip()
+    memo = dialog_result[2].strip()
 
     updated_task = {"properties": {}}
+
+    deadline = change_deadline(deadline)
 
     if task_name:
         updated_task["properties"]["タスク名"] = {
@@ -147,18 +152,6 @@ def edit_task(task_id):
                     }
                 }
             ]
-        }
-    if priority:
-        updated_task["properties"]["優先度"] = {
-            "select": {
-                "name": priority
-            }
-        }
-    if status:
-        updated_task["properties"]["ステータス"] = {
-            "status": {
-                "name": status
-            }
         }
     if deadline:
         updated_task["properties"]["期限"] = {
