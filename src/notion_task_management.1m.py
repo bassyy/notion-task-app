@@ -1,4 +1,4 @@
-#!/Users/p181/.pyenv/versions/3.11.6/bin/python3
+#!/usr/local/bin/python3
 
 import requests
 import json
@@ -14,7 +14,6 @@ load_dotenv()
 NOTION_API_TOKEN = os.getenv('NOTION_API_TOKEN')
 DATABASE_ID = os.getenv('DATABASE_ID')
 ZENITY_SCRIPT_PATH = os.getenv('ZENITY_SCRIPT_PATH')
-PYTHON_PATH = os.getenv('PYTHON_PATH')
 SCRIPT_PATH = os.path.abspath(__file__)
 
 # Notion APIのエンドポイント
@@ -264,14 +263,14 @@ def main():
             print(f"--{status_icon} ステータス: {status} | terminal=false")
             print(f"--期限: {deadline} | terminal=false")
             print(f"--{memo_icon} メモ: {memo} | terminal=false")
-            print(f"--今日やるのチェックを外す | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='toggle_today' param3='{task_id}' terminal=false refresh=true")
-            print(f"--ステータスを未着手に変更 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='未着手' terminal=false refresh=true")
-            print(f"--ステータスを進行中に変更 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='進行中' terminal=false refresh=true")
-            print(f"--ステータスを完了に変更 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
-            print(f"--削除 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='delete' param3='{task_id}' terminal=false refresh=true")
-            print(f"--編集 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=true refresh=true")
+            print(f"--今日やるのチェックを外す | bash='{SCRIPT_PATH}' param2='toggle_today' param3='{task_id}' terminal=false refresh=true")
+            print(f"--ステータスを未着手に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='未着手' terminal=false refresh=true")
+            print(f"--ステータスを進行中に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='進行中' terminal=false refresh=true")
+            print(f"--ステータスを完了に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
+            print(f"--削除 | bash='{SCRIPT_PATH}' param2='delete' param3='{task_id}' terminal=false refresh=true")
+            print(f"--編集 | bash='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=true refresh=true")
     print("---")
-    print(f"新しいタスクを追加 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='add' terminal=true refresh=true")
+    print(f"新しいタスクを追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
     print("更新 | refresh=true")
 
 if __name__ == "__main__":
