@@ -269,9 +269,9 @@ def main():
             print(f"--ステータスを進行中に変更 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='進行中' terminal=false refresh=true")
             print(f"--ステータスを完了に変更 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
             print(f"--削除 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='delete' param3='{task_id}' terminal=false refresh=true")
-            print(f"--編集 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=true refresh=true")
+            print(f"--編集 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=false refresh=true")
     print("---")
-    print(f"新しいタスクを追加 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='add' terminal=true refresh=true")
+    print(f"新しいタスクを追加 | bash='{PYTHON_PATH}' param1='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
     print("更新 | refresh=true")
 
 if __name__ == "__main__":
