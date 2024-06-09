@@ -219,7 +219,9 @@ def change_status(task_id, new_status):
 def main():
     print(f":book.fill: タスク一覧 | dropdown=true")
     print("---")
-    print(f"タスク一覧を表示 | href=https://www.notion.so/{DATABASE_ID}")
+    print(f"新しいタスクを追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
+    print(f"NotionDBを表示 | href=https://www.notion.so/{DATABASE_ID}")
+    print("タスクを更新 | refresh=true")
     print("---")
     tasks = fetch_tasks()
     if tasks:
@@ -258,7 +260,9 @@ def main():
                 memo = task["properties"]["メモ"]["rich_text"][0]["text"]["content"]
                 memo_icon = "📝"  # メモが設定されている場合のアイコン
 
-            print(f"{task_name} | href=https://www.notion.so/aidemy/{task_id}")
+            print(f"{task_name} | href=https://www.notion.so/aidemy/{task_id}/")
+            print(f"--ステータスを完了に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
+            print(f"--編集 | bash='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=false refresh=true")
             print(f"--{priority_icon} 優先度: {priority} | terminal=false")
             print(f"--{status_icon} ステータス: {status} | terminal=false")
             print(f"--期限: {deadline} | terminal=false")
@@ -266,12 +270,9 @@ def main():
             print(f"--今日やるのチェックを外す | bash='{SCRIPT_PATH}' param2='toggle_today' param3='{task_id}' terminal=false refresh=true")
             print(f"--ステータスを未着手に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='未着手' terminal=false refresh=true")
             print(f"--ステータスを進行中に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='進行中' terminal=false refresh=true")
-            print(f"--ステータスを完了に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
+
             print(f"--削除 | bash='{SCRIPT_PATH}' param2='delete' param3='{task_id}' terminal=false refresh=true")
-            print(f"--編集 | bash='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=true refresh=true")
-    print("---")
-    print(f"新しいタスクを追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
-    print("更新 | refresh=true")
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
