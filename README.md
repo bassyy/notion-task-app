@@ -1,11 +1,11 @@
 # notion-task-app
-MacのメニューバーからNotionへのタスクを連携するツール
-
+メニューバーからNotionへの連携をするツール
 
 # Todo
  - チェック以外の項目も表示する
- - ターミナルを非表示にする
-   - Automatorを使ってみる
- - タスクを連続追加できるようにする
- - Pythonのパス消す
-   - VScode と ターミナルのPythonのパスを合わせる。
+   - タスク一覧 
+     - hogehoge1
+     - hogehoge2
+     - hogehoge3
+     - hogehoge4
+ - タスク名が未入力時、エラーダイアログを出す
