@@ -1,0 +1,8 @@
+{
+    "title": "タスク名",  
+    "date": "期限",
+    "status": "ステータス",
+    "checkbox": "ToDo",
+    "select" : "優先度",
+    "rich_text": "メモ"
+}
