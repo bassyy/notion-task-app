@@ -275,24 +275,12 @@ def main():
 
             # プロパティの存在を確認
             priority = "未設定"
-            priority_icon = "⚪️"  # デフォルトの低い優先度のアイコン
             if notion_columns["select"] in task["properties"] and task["properties"][notion_columns["select"]].get("select"):
                 priority = task["properties"][notion_columns["select"]]["select"]["name"]
-                if priority == "高":
-                    priority_icon = "🔴"  # 高い優先度のアイコン
-                elif priority == "中":
-                    priority_icon = "🟠"  # 中の優先度のアイコン
 
             status = "未設定"
-            status_icon = "⚪️"  # デフォルトの未着手アイコン
             if notion_columns["status"] in task["properties"] and task["properties"][notion_columns["status"]].get("status"):
                 status = task["properties"][notion_columns["status"]]["status"]["name"]
-                if status == "未着手":
-                    status_icon = "🔴"  # 未着手の場合のアイコン
-                elif status == "進行中":
-                    status_icon = "🟠"  # 進行中の場合のアイコン
-                elif status == "完了":
-                    status_icon = "🟢"  # 完了の場合のアイコン
 
             deadline = "なし"
             if notion_columns["date"] in task["properties"] and task["properties"][notion_columns["date"]].get("date"):
@@ -305,8 +293,8 @@ def main():
             print(f"{task_name} | href={task_url}")
             print(f"--{notion_columns['status']}を完了に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
             print(f"--編集 | bash='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=false refresh=true")
-            print(f"--{priority_icon} {notion_columns['select']} : {priority} | terminal=false")
-            print(f"--{status_icon} {notion_columns['status']}: {status} | terminal=false")
+            print(f"--{notion_columns['select']} : {priority} | terminal=false")
+            print(f"--{notion_columns['status']}: {status} | terminal=false")
             print(f"--{notion_columns['date']}: {deadline} | terminal=false")
             print(f"--{notion_columns['rich_text']}: {memo} | terminal=false")
             print(f"--{notion_columns['checkbox']}のチェックを外す | bash='{SCRIPT_PATH}' param2='toggle_today' param3='{task_id}' terminal=false refresh=true")
