@@ -19,6 +19,9 @@ ZENITY_SCRIPT_PATH = os.getenv('ZENITY_SCRIPT_PATH')
 SCRIPT_PATH = os.path.abspath(__file__)
 JSON_PATH = os.getenv("JSON_PATH")
 
+# メニューバーに表示するタイトル
+MENU_TITLE = 'タスク一覧'
+
 
 # Notion APIのエンドポイント
 database_url = f"https://api.notion.com/v1/databases/{DATABASE_ID}/query"
@@ -92,7 +95,9 @@ def add_task():
     deadline = change_deadline(deadline)
 
     new_task = {
-        "parent": {"database_id": DATABASE_ID},
+        "parent": {
+            "database_id": DATABASE_ID
+            },
         "properties": {
             notion_columns["title"]:{
                 "title": [
@@ -231,17 +236,21 @@ def change_status(task_id, new_status):
         print(response.text)
 
 def main():
-    print(f":book.fill: {notion_columns['title']}一覧 | dropdown=true")
+    print(f":book.fill: {MENU_TITLE} | dropdown=true")
     print("---")
     print(f"{notion_columns['title']}を追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
     print(f"Notion DBを表示 | href=https://www.notion.so/{DATABASE_ID}")
     print(f"{notion_columns['title']}を更新 | refresh=true")
     print("---")
     tasks = fetch_tasks()
+#    print(tasks)
+
     if tasks:
         for task in tasks.get("results", []):
+            # 
             task_name = task["properties"][notion_columns["title"]]["title"][0]["text"]["content"]
             task_id = task["id"]
+            task_url = task["url"]
 
             # プロパティの存在を確認
             priority = "未設定"
@@ -274,7 +283,7 @@ def main():
                 memo = task["properties"][notion_columns["rich_text"]]["rich_text"][0]["text"]["content"]
                 memo_icon = "📝"  # メモが設定されている場合のアイコン
 
-            print(f"{task_name} | href=https://www.notion.so/aidemy/{task_id}/")
+            print(f"{task_name} | href={task_url}")
             print(f"--{notion_columns['status']}を完了に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
             print(f"--編集 | bash='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=false refresh=true")
             print(f"--{priority_icon} {notion_columns['select']} : {priority} | terminal=false")
@@ -284,9 +293,11 @@ def main():
             print(f"--{notion_columns['checkbox']}のチェックを外す | bash='{SCRIPT_PATH}' param2='toggle_today' param3='{task_id}' terminal=false refresh=true")
             print(f"--{notion_columns['status']}を未着手に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='未着手' terminal=false refresh=true")
             print(f"--{notion_columns['status']}を進行中に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='進行中' terminal=false refresh=true")
-
             print(f"--削除 | bash='{SCRIPT_PATH}' param2='delete' param3='{task_id}' terminal=false refresh=true")
 
+        print("---")
+        print(f"{notion_columns['checkbox']}にチェックなし{notion_columns['title']}一覧 | refresh=true")
+        print(f"--")
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
