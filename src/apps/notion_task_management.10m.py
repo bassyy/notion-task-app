@@ -32,7 +32,6 @@ headers = {
 # jsonファイルの読み取り
 with open(JSON_PATH, 'r') as file:
     notion_columns = json.load(file)
-#    print(notion_columns)
 
 # 期限をISO 8601形式に変換
 def change_deadline(deadline):
@@ -131,9 +130,9 @@ def add_task():
     response = requests.post(page_url, headers=headers, data=json.dumps(new_task))
 
     if response.status_code == 200:
-        print("タスクが正常に追加されました。")
+        print(f"{notion_columns['title']}が正常に追加されました。")
     else:
-        print("タスクの追加に失敗しました。")
+        print(f"{notion_columns['title']}の追加に失敗しました。")
         print(response.text)
 
 def delete_task(task_id):
@@ -141,9 +140,9 @@ def delete_task(task_id):
     response = requests.delete(url, headers=headers)
 
     if response.status_code == 200:
-        print("タスクが正常に削除されました。")
+        print(f"{notion_columns['title']}が正常に削除されました。")
     else:
-        print("タスクの削除に失敗しました。")
+        print(f"{notion_columns['title']}の削除に失敗しました。")
         print(response.text)
 
 def edit_task(task_id):
@@ -188,9 +187,9 @@ def edit_task(task_id):
     response = requests.patch(url, headers=headers, data=json.dumps(updated_task))
 
     if response.status_code == 200:
-        print("タスクが正常に更新されました。")
+        print(f"{notion_columns['title']}が正常に更新されました。")
     else:
-        print("タスクの更新に失敗しました。")
+        print(f"{notion_columns['title']}の更新に失敗しました。")
         print(response.text)
 
 def toggle_today(task_id):
@@ -226,17 +225,17 @@ def change_status(task_id, new_status):
     response = requests.patch(url, headers=headers, data=json.dumps(updated_task))
 
     if response.status_code == 200:
-        print("ステータスが正常に変更されました。")
+        print(f"{notion_columns['status']}が正常に変更されました。")
     else:
-        print("ステータスの変更に失敗しました。")
+        print(f"{notion_columns['status']}の変更に失敗しました。")
         print(response.text)
 
 def main():
-    print(f":book.fill: タスク一覧 | dropdown=true")
+    print(f":book.fill: {notion_columns['title']}一覧 | dropdown=true")
     print("---")
     print(f"{notion_columns['title']}を追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
-    print(f"NotionDBを表示 | href=https://www.notion.so/{DATABASE_ID}")
-    print("タスクを更新 | refresh=true")
+    print(f"Notion DBを表示 | href=https://www.notion.so/{DATABASE_ID}")
+    print(f"{notion_columns['title']}を更新 | refresh=true")
     print("---")
     tasks = fetch_tasks()
     if tasks:
