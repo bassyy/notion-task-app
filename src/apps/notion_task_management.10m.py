@@ -6,7 +6,6 @@ import sys, os
 from dotenv import load_dotenv
 import subprocess
 from datetime import datetime
-import json
 
 
 # .envファイルを読み込む
@@ -18,6 +17,9 @@ DATABASE_ID = os.getenv('DATABASE_ID')
 ZENITY_SCRIPT_PATH = os.getenv('ZENITY_SCRIPT_PATH')
 SCRIPT_PATH = os.path.abspath(__file__)
 JSON_PATH = os.getenv("JSON_PATH")
+
+# メニューバーに表示するタイトル
+MENU_TITLE = 'タスク一覧'
 
 
 # Notion APIのエンドポイント
@@ -32,7 +34,6 @@ headers = {
 # jsonファイルの読み取り
 with open(JSON_PATH, 'r') as file:
     notion_columns = json.load(file)
-#    print(notion_columns)
 
 # 期限をISO 8601形式に変換
 def change_deadline(deadline):
@@ -55,24 +56,45 @@ def run_zenity(script_path):
 
     return result.stdout.strip().split("|")
 
-def fetch_tasks():
+def fetch_tasks(ch_box_bool):
     payload = {
         "filter": {
-            "property": notion_columns["checkbox"],
-            "checkbox": {
-                "equals": True
-            }   
+            "and": [
+                {
+                    "property": notion_columns["status"],
+                    "status": {
+                        "does_not_equal": "完了"
+                    }
+                },
+                {
+                    "property": notion_columns["status"],
+                    "status": {
+                        "does_not_equal": "保留"
+                    }
+                },
+                {
+                    "property": notion_columns["checkbox"],  # チェックボックスのプロパティ名
+                    "checkbox": {
+                        "equals": ch_box_bool
+                    }
+                }
+            ]
         },
         "sorts": [
             {
+                "property": notion_columns["date"],
+                "direction": "ascending"  # 期限が早い順にソート
+            },
+            {
                 "property": notion_columns["select"],
-                "direction": "ascending"
+                "direction": "ascending"  # 追加のソート条件
             }
         ]
     }
 
     response = requests.post(database_url, headers=headers, data=json.dumps(payload))
-    
+
+
     if response.status_code == 401:
         print("認証エラー: APIトークンまたはデータベースのアクセス権限を確認してください。")
         print(response.text)
@@ -93,7 +115,9 @@ def add_task():
     deadline = change_deadline(deadline)
 
     new_task = {
-        "parent": {"database_id": DATABASE_ID},
+        "parent": {
+            "database_id": DATABASE_ID
+            },
         "properties": {
             notion_columns["title"]:{
                 "title": [
@@ -131,19 +155,21 @@ def add_task():
     response = requests.post(page_url, headers=headers, data=json.dumps(new_task))
 
     if response.status_code == 200:
-        print("タスクが正常に追加されました。")
+        print(f"{notion_columns['title']}が正常に追加されました。")
     else:
-        print("タスクの追加に失敗しました。")
+        print(f"{notion_columns['title']}の追加に失敗しました。")
         print(response.text)
+
+
 
 def delete_task(task_id):
     url = f"https://api.notion.com/v1/blocks/{task_id}"
     response = requests.delete(url, headers=headers)
 
     if response.status_code == 200:
-        print("タスクが正常に削除されました。")
+        print(f"{notion_columns['title']}が正常に削除されました。")
     else:
-        print("タスクの削除に失敗しました。")
+        print(f"{notion_columns['title']}の削除に失敗しました。")
         print(response.text)
 
 def edit_task(task_id):
@@ -188,9 +214,9 @@ def edit_task(task_id):
     response = requests.patch(url, headers=headers, data=json.dumps(updated_task))
 
     if response.status_code == 200:
-        print("タスクが正常に更新されました。")
+        print(f"{notion_columns['title']}が正常に更新されました。")
     else:
-        print("タスクの更新に失敗しました。")
+        print(f"{notion_columns['title']}の更新に失敗しました。")
         print(response.text)
 
 def toggle_today(task_id):
@@ -226,67 +252,69 @@ def change_status(task_id, new_status):
     response = requests.patch(url, headers=headers, data=json.dumps(updated_task))
 
     if response.status_code == 200:
-        print("ステータスが正常に変更されました。")
+        print(f"{notion_columns['status']}が正常に変更されました。")
     else:
-        print("ステータスの変更に失敗しました。")
+        print(f"{notion_columns['status']}の変更に失敗しました。")
         print(response.text)
 
 def main():
-    print(f":book.fill: タスク一覧 | dropdown=true")
+    print(f":book.fill: {MENU_TITLE} | dropdown=true")
     print("---")
-    print(f"ToDoを追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
-    print(f"NotionDBを表示 | href=https://www.notion.so/{DATABASE_ID}")
-    print("タスクを更新 | refresh=true")
+    print(f"{notion_columns['title']}を追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
+    print(f"Notion DBを表示 | href=https://www.notion.so/{DATABASE_ID}")
+    print(f"{notion_columns['title']}を更新 | refresh=true")
     print("---")
-    tasks = fetch_tasks()
-    if tasks:
-        for task in tasks.get("results", []):
+    task_chbox_true = fetch_tasks(True)
+    task_chbox_false = fetch_tasks(False)
+
+    if task_chbox_true:
+        for task in task_chbox_true.get("results", []):
             task_name = task["properties"][notion_columns["title"]]["title"][0]["text"]["content"]
             task_id = task["id"]
+            task_url = task["url"]
 
             # プロパティの存在を確認
             priority = "未設定"
-            priority_icon = "⚪️"  # デフォルトの低い優先度のアイコン
             if notion_columns["select"] in task["properties"] and task["properties"][notion_columns["select"]].get("select"):
                 priority = task["properties"][notion_columns["select"]]["select"]["name"]
-                if priority == "高":
-                    priority_icon = "🔴"  # 高い優先度のアイコン
-                elif priority == "中":
-                    priority_icon = "🟠"  # 中の優先度のアイコン
 
             status = "未設定"
-            status_icon = "⚪️"  # デフォルトの未着手アイコン
             if notion_columns["status"] in task["properties"] and task["properties"][notion_columns["status"]].get("status"):
                 status = task["properties"][notion_columns["status"]]["status"]["name"]
-                if status == "未着手":
-                    status_icon = "🔴"  # 未着手の場合のアイコン
-                elif status == "進行中":
-                    status_icon = "🟠"  # 進行中の場合のアイコン
-                elif status == "完了":
-                    status_icon = "🟢"  # 完了の場合のアイコン
 
             deadline = "なし"
             if notion_columns["date"] in task["properties"] and task["properties"][notion_columns["date"]].get("date"):
                 deadline = task["properties"][notion_columns["date"]]["date"]["start"]
 
             memo = "なし"
-            memo_icon = "⚪️"  # デフォルトのメモがないアイコン
             if notion_columns["rich_text"] in task["properties"] and task["properties"][notion_columns["rich_text"]].get("rich_text"):
                 memo = task["properties"][notion_columns["rich_text"]]["rich_text"][0]["text"]["content"]
-                memo_icon = "📝"  # メモが設定されている場合のアイコン
 
-            print(f"{task_name} | href=https://www.notion.so/aidemy/{task_id}/")
+            print(f"{task_name} | href={task_url}")
             print(f"--{notion_columns['status']}を完了に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='完了' terminal=false refresh=true")
             print(f"--編集 | bash='{SCRIPT_PATH}' param2='edit' param3='{task_id}' terminal=false refresh=true")
-            print(f"--{priority_icon} {notion_columns['select']} : {priority} | terminal=false")
-            print(f"--{status_icon} {notion_columns['status']}: {status} | terminal=false")
+            print(f"--{notion_columns['select']} : {priority} | terminal=false")
+            print(f"--{notion_columns['status']}: {status} | terminal=false")
             print(f"--{notion_columns['date']}: {deadline} | terminal=false")
-            print(f"--{memo_icon} {notion_columns['rich_text']}: {memo} | terminal=false")
+            print(f"--{notion_columns['rich_text']}: {memo} | terminal=false")
             print(f"--{notion_columns['checkbox']}のチェックを外す | bash='{SCRIPT_PATH}' param2='toggle_today' param3='{task_id}' terminal=false refresh=true")
             print(f"--{notion_columns['status']}を未着手に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='未着手' terminal=false refresh=true")
             print(f"--{notion_columns['status']}を進行中に変更 | bash='{SCRIPT_PATH}' param2='change_status' param3='{task_id}' param4='進行中' terminal=false refresh=true")
-
             print(f"--削除 | bash='{SCRIPT_PATH}' param2='delete' param3='{task_id}' terminal=false refresh=true")
+
+    if task_chbox_false:
+        print("---")
+        print(f"{notion_columns['checkbox']}にチェックなし{notion_columns['title']}一覧 | refresh=true")
+        for task in task_chbox_false.get("results", []):
+            task_name = task["properties"][notion_columns["title"]]["title"][0]["text"]["content"]
+            task_id = task["id"]
+            task_url = task["url"]
+
+            deadline = "なし"
+            if notion_columns["date"] in task["properties"] and task["properties"][notion_columns["date"]].get("date"):
+                deadline = task["properties"][notion_columns["date"]]["date"]["start"]
+
+            print(f"--{task_name} | href={task_url}")
 
 
 if __name__ == "__main__":
