@@ -234,7 +234,7 @@ def change_status(task_id, new_status):
 def main():
     print(f":book.fill: タスク一覧 | dropdown=true")
     print("---")
-    print(f"ToDoを追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
+    print(f"{notion_columns['title']}を追加 | bash='{SCRIPT_PATH}' param2='add' terminal=false refresh=true")
     print(f"NotionDBを表示 | href=https://www.notion.so/{DATABASE_ID}")
     print("タスクを更新 | refresh=true")
     print("---")
