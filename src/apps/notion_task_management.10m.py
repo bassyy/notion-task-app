@@ -44,8 +44,15 @@ def change_deadline(deadline):
             return
     return deadline
 
-def run_zenity(script_path):
-    result = subprocess.run([script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+def run_zenity(script_path): 
+    command = [
+        script_path, 
+        notion_columns['title'],
+        notion_columns['date'],
+        notion_columns['rich_text']
+        ]
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
     return result.stdout.strip().split("|")
 
 def fetch_tasks():
