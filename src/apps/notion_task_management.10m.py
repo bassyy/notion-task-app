@@ -6,7 +6,6 @@ import sys, os
 from dotenv import load_dotenv
 import subprocess
 from datetime import datetime
-import json
 
 
 # .envファイルを読み込む
