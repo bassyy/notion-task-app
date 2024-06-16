@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # タスク名、期限、メモを取得するフォームの表示
 form_result=$(
     zenity --forms \
