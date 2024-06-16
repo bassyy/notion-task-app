@@ -5,7 +5,7 @@
    - 参考 : [ファイル名の命名規則](https://github.com/swiftbar/SwiftBar)
 
 # 起動方法
-1. swiftbarを起動
+1. swiftbarのアプリを起動
 2. （最初のみ）[Open plugin Folder...]からnotion-task-app/src/appsディレクトリを選択
 
 # 設定
@@ -45,4 +45,22 @@
 ](https://www.notion.so/ja-jp/help/add-and-manage-connections-with-the-api)
 
 
-## ２. 環境構築
+## 2. 環境構築
+  - Swiftbarをインストールする
+    - [ダウンロード先](https://github.com/swiftbar/SwiftBar/releases)
+  - 必要なライブラリをインストールする
+    ```
+    pip3 install -r requirements.txt
+    ```
+  - .env.sampleを.envにリネームする。
+    - 必要な環境変数を埋める
+  - Zenityをインストールする
+    ```
+    brew install zenity
+    ```
+    - 実行後、以下のエラーが出たら `sudo xcodebuild -license accept` を実行する
+        ``` 
+        Error: You have not agreed to the Xcode license. Please resolve this by running:
+            sudo xcodebuild -license accept
+        ```
+        - `sudo xcodebuild -license accept` を実行後、`brew install zenity`を再度実行
