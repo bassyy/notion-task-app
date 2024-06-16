@@ -64,3 +64,7 @@
             sudo xcodebuild -license accept
         ```
         - `sudo xcodebuild -license accept` を実行後、`brew install zenity`を再度実行
+
+# Lifehack
+ - 日次 / 週次で行うタスクはNotionDBで繰り返し処理を追加すると便利
+ - オートメーションを活用して、ステータスが完了になると、チェックボックスを外す処理を入れると便利
