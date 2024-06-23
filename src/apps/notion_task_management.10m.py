@@ -16,7 +16,7 @@ DATABASE_ID = os.getenv('DATABASE_ID')
 
 #ファイル名の設定
 JSON_FILE_NAME = 'column_setting.json'
-ZENITY_FILE_NAME = 'add_task.sh'
+ZENITY_FILE_NAME = 'task_editor.sh'
 
 ## パスの取得
 PYTHON_SCRIPT_PATH = os.path.abspath(__file__)
