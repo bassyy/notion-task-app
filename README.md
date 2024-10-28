@@ -44,6 +44,8 @@
    - 参照：[APIを使用した接続の追加と管理
 ](https://www.notion.so/ja-jp/help/add-and-manage-connections-with-the-api)
 
+ - NotionDBのテンプレートは[こちら](https://temporal-seatbelt-718.notion.site/ToDo-a8d8f7875ae449f98eaa377b20dd13cb)
+
 
 ## 2. 環境構築
   - Swiftbarをインストールする
