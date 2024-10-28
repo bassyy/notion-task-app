@@ -1,10 +1,10 @@
-#!/usr/local/bin/python3
+#!/Applications/github/notion-task-app/venv/bin/python3
 
 import requests
 import json
 import sys, os
 from dotenv import load_dotenv
-import subprocess
+import subprocess   
 from datetime import datetime
 
 # .envファイルを読み込む
