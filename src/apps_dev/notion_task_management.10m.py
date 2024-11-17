@@ -1,4 +1,4 @@
-#!/Applications/github/notion-task-app/venv/bin/python3
+#!/opt/homebrew/bin/python3
 
 import requests
 import json
@@ -37,7 +37,6 @@ headers = {
     "Content-Type": "application/json"
 }
 
-
 # Jsonファイルの読み取り
 with open(JSON_PATH, 'r') as file:
     notion_columns = json.load(file)
@@ -54,12 +53,14 @@ def change_deadline(deadline):
 
 # Zenityの起動する関数
 def run_zenity(script_path): 
+
     command = [
         script_path, 
         notion_columns['title'],
         notion_columns['date'],
         notion_columns['rich_text']
         ]
+    
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     return result.stdout.strip().split("|")

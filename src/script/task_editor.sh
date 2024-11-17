@@ -2,7 +2,7 @@
 
 # タスク名、期限、メモを取得するフォームの表示
 form_result=$(
-    zenity --forms \
+    /opt/homebrew/bin/zenity --forms \
     --title="新しい$1" \
     --text="$1の詳細を入力してください。" \
     --add-entry="$1" \
